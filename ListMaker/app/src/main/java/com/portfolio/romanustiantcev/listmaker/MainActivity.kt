@@ -2,11 +2,14 @@ package com.portfolio.romanustiantcev.listmaker
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 
 import kotlinx.android.synthetic.main.activity_list.*
 
@@ -20,8 +23,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            showCreateListDialog()
         }
 
         listsRecyclerView = findViewById(R.id.lists_recyclerview)
@@ -44,5 +46,21 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showCreateListDialog() {
+        val dialogTitle = getString(R.string.name_of_list)
+        val positiveButtonTitle = getString(R.string.create_list)
+
+        val builder = AlertDialog.Builder(this)
+        val listTitleEditText = EditText(this)
+        listTitleEditText.inputType = InputType.TYPE_CLASS_TEXT
+
+        builder.setTitle(dialogTitle)
+        builder.setPositiveButton(positiveButtonTitle, { dialog, _ ->
+            dialog.dismiss()
+        })
+        builder.create()
+        builder.show()
     }
 }
