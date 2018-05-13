@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_list.*
 class MainActivity : AppCompatActivity() {
 
     lateinit var listsRecyclerView: RecyclerView
+    val listDataManager: ListDataManager = ListDataManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +27,11 @@ class MainActivity : AppCompatActivity() {
             showCreateListDialog()
         }
 
+        val lists = listDataManager.readLists()
+
         listsRecyclerView = findViewById(R.id.lists_recyclerview)
         listsRecyclerView.layoutManager = LinearLayoutManager(this)
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter()
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists)
 
     }
 
@@ -57,7 +60,14 @@ class MainActivity : AppCompatActivity() {
         listTitleEditText.inputType = InputType.TYPE_CLASS_TEXT
 
         builder.setTitle(dialogTitle)
+        builder.setView(listTitleEditText)
         builder.setPositiveButton(positiveButtonTitle, { dialog, _ ->
+            val list = TaskList(listTitleEditText.text.toString())
+            listDataManager.saveList(list)
+
+            val recyclerAdapter = listsRecyclerView.adapter as ListSelectionRecyclerViewAdapter
+            recyclerAdapter.addList(list)
+
             dialog.dismiss()
         })
         builder.create()
